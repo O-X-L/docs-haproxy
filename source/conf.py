@@ -13,8 +13,7 @@ html_static_path = ['_static']
 master_doc = 'index'
 display_version = True
 sticky_navigation = True
-# html_logo = '_static/img/icon.png'
-# html_favicon = '_static/img/icon.png'
+html_favicon = '_static/img/favicon.svg'
 source_suffix = {
     '.rst': 'restructuredtext',
 }
@@ -86,20 +85,20 @@ html_theme_options = {
     "version_info": [
         {
             "version": "https://www.haproxy.org",
-            "title": "HAProxy Project",
+            "title": "HAProxy-Community Project",
             "aliases": [],
         },
         {
             "version": "https://github.com/haproxy/haproxy",
-            "title": "HAProxy Repository on GitHub",
+            "title": "HAProxy-Community Repository on GitHub",
             "aliases": [],
         },
     ],
     "social": [],
 }
 
-html_title = 'HAProxy Docs'
-html_short_title = 'HAProxy Documentation'
+html_title = 'HAProxy-Community Docs'
+html_short_title = 'HAProxy-Community Docs'
 html_js_files = ['https://files.oxl.at/js/feedback.js']
 html_css_files = ['css/main.css', 'https://files.oxl.at/css/feedback.css']
 

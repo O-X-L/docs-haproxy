@@ -107,6 +107,17 @@ def write_index(manuals, chapter_dirs, out_dir):
     lines.append("   keywords")
     lines.append("")
 
+    lines.append("Legal")
+    lines.append("-----")
+    lines.append("")
+    lines.append(".. toctree::")
+    lines.append("   :maxdepth: 1")
+    lines.append("   :caption: Legal")
+    lines.append("   :glob:")
+    lines.append("")
+    lines.append("   legal/*")
+    lines.append("")
+
     path = os.path.join(out_dir, "index.rst")
     with open(path, "w", encoding="utf-8") as fd:
         fd.write("\n".join(lines))

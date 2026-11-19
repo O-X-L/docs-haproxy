@@ -100,6 +100,12 @@ def test_format_inline_does_not_escape_inside_code():
     assert "\\*x\\*" in out  # outside code span is escaped
 
 
+def test_format_inline_de_links_example_urls():
+    out = convert.format_inline("see http://example.com/foo and https://www.lua.org/pil/8.1.html")
+    assert "http\\://example.com/foo" in out  # example URL de-linked
+    assert "https://www.lua.org/pil/8.1.html" in out  # reference URL untouched
+
+
 # ---------------------------------------------------------------------------
 # Feature-support cells
 # ---------------------------------------------------------------------------
@@ -216,6 +222,26 @@ def test_parse_grid_table_title_box():
     assert rows[0] == ["a", "b"]
 
 
+def test_parse_grid_table_two_level_header():
+    lines = [
+        "  +-------------+-----+-----+-----+",
+        "  | variable    | usable | modif |",
+        "  |             +----+--+---+-----+",
+        "  |             | M | W | M  | W   |",
+        "  +-------------+---+---+---+-----+",
+        "  | HAPROXY_A   | X | X |    | X   |",
+        "  | HAPROXY_B   |   |   | X  |     |",
+        "  +-------------+---+---+---+-----+",
+        "",
+    ]
+    title, rows, _ = convert.parse_grid_table(lines, 0)
+    assert title is None
+    # Flattened two-level header + separate data rows.
+    assert rows[0] == ["variable", "usable M", "usable W", "modif M", "modif W"]
+    assert rows[1] == ["HAPROXY_A", "X", "X", "", "X"]
+    assert rows[2] == ["HAPROXY_B", "", "", "X", ""]
+
+
 # ---------------------------------------------------------------------------
 # deindent
 # ---------------------------------------------------------------------------
@@ -272,6 +298,36 @@ def test_render_indented_code_block():
     assert "acl <aclname> <criterion> [flags]" in out
 
 
+def test_render_indented_config_with_comments():
+    out = "\n".join(render([
+        "These are equivalent:",
+        "",
+        "         global#this is the global section",
+        "     daemon#daemonize",
+        "     mode             http   # or tcp",
+        "",
+        "After the block.",
+    ]))
+    assert ".. code-block:: text" in out
+    assert "global#this is the global section" in out
+    assert "daemon#daemonize" in out
+
+
+def test_render_indented_aligned_list_as_code():
+    out = "\n".join(render([
+        "of:",
+        "",
+        "       space or tab as a word separator",
+        "  '    single quote as a strong quoting delimiter",
+        "  #    hash as a comment start",
+        "",
+        "After.",
+    ]))
+    assert ".. code-block:: text" in out
+    assert "space or tab as a word separator" in out
+    assert "single quote as a strong quoting delimiter" in out
+
+
 def test_render_bullet_syntax_inline_code():
     out = "\n".join(render([
         " - defaults [<name>]",
@@ -289,6 +345,38 @@ def test_render_feature_table():
     ]))
     assert ":check:`\u2713`" in out
     assert ":cross:`\u2717`" in out
+
+
+def test_render_numbered_list():
+    out = "\n".join(render([
+        "  1. first rule",
+        "  2. second rule with continuation",
+        "     on the next line",
+    ]))
+    assert "#. first rule" in out
+    assert "#. second rule with continuation on the next line" in out
+    assert ".. code-block::" not in out
+
+
+def test_render_single_word_definition():
+    out = "\n".join(render([
+        "  * HAPROXY_LOCALPEER: defined at the startup of the process.",
+    ]))
+    assert "- ``HAPROXY_LOCALPEER``" in out
+    assert "defined at the startup of the process." in out
+
+
+def test_render_arguments_keyword_description():
+    out = "\n".join(render([
+        "  - type <type>",
+        "             This mandatory argument sets the key type.",
+        "     * ip        This type should be avoided.",
+    ]))
+    assert "- ``type <type>``" in out
+    assert "This mandatory argument sets the key type." in out
+    # nested bullet indented under the parent, also keyword-description
+    assert "  - ``ip``" in out
+    assert "This type should be avoided." in out
 
 
 # ---------------------------------------------------------------------------
