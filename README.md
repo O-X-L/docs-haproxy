@@ -4,6 +4,14 @@ Sphinx-based documentation site for [HAProxy-Community](https://github.com/hapro
 
 ----
 
+## Mirror
+
+URL: [haproxy.docs.oxl.app](https://haproxy.docs.oxl.app)
+
+[![Docs Uptime](https://status.oxl.at/api/v1/endpoints/4--docs-mirrors_docs-mirror-haproxy/uptimes/30d/badge.svg)](https://status.oxl.at/endpoints/4--docs-mirrors_docs-mirror-haproxy)
+
+----
+
 ## Build
 
 ```bash
