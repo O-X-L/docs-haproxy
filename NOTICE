@@ -1,0 +1,12 @@
+docs-haproxy
+============
+
+This product includes software developed by:
+
+- The HAProxy project (https://www.haproxy.org/) — the upstream documentation
+  manuals (GPL-2.0).
+- Cyril Bonté — the `haproxy-dconv` documentation converter
+  (https://github.com/cbonte/haproxy-dconv), from which the RST conversion
+  logic in `renderer/convert.py` is adapted. Licensed under the Apache License
+  Version 2.0; see `vendor/haproxy-dconv/LICENSE` and
+  `vendor/haproxy-dconv/NOTICE`.

@@ -1,0 +1,43 @@
+FROM docker.io/library/debian:13
+
+# BUILD:
+#   docker build -t localhost/opencode -f ./ai/DockerfileOpenCode --network=host  --build-arg UID=$(id -u) --no-cache ./ai/
+# RUN:
+#   docker run -it --rm -v "$(pwd):/workspace:rw" -v "$(pwd)/.opencode:/home/coder/.local/share/opencode" --network=host localhost/opencode:latest
+
+ARG UID=1000
+
+USER root
+
+ENV HISTFILE=/workspace/.bash_history \
+    PATH=/usr/local/bin/pyvenv/bin:/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin
+
+RUN apt-get update && apt-get install -y --no-install-recommends \
+    curl jq git python3-pip python3-virtualenv \
+    ripgrep ca-certificates \
+    podman uidmap fuse-overlayfs passt \
+    && python3 -m virtualenv /usr/local/bin/pyvenv \
+    && /bin/bash -c "source /usr/local/bin/pyvenv/bin/activate && python3 -m pip install pyyaml yamllint" \
+    && curl -fsSL https://deb.nodesource.com/setup_24.x | bash - \
+    && apt-get install -y --no-install-recommends nodejs \
+    && apt-get clean \
+    && rm -rf /var/lib/apt/lists/* \
+    && useradd --uid "$UID" --user-group --shell /bin/bash --home-dir /home/coder --create-home coder
+
+# Nested rootless podman: useradd's default subuid/subgid range (100000+)
+# lies outside the ID range this container's own user namespace has mapped
+# when started via scripts/dev/ai-container.sh (--userns=keep-id maps IDs
+# 0..~65536 only), which makes newuidmap fail with "Operation not permitted".
+# Pick a range inside that mapped range (and above the coder user's own ID).
+RUN echo "coder:10000:50000" > /etc/subuid \
+    && echo "coder:10000:50000" > /etc/subgid
+
+# Install OpenCode (replaces the previous run-deepseek-cli package).
+# The npm package `opencode-ai` provides the `opencode` binary.
+RUN npm install -g opencode-ai@latest
+
+WORKDIR /workspace
+
+USER coder
+
+CMD ["/usr/bin/opencode"]

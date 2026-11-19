@@ -1,0 +1,11 @@
+/build/
+/vendor/haproxy-docs/
+/.venv/
+/.bash_history
+/.opencode/
+/.idea/
+/__pycache__/
+*.pyc
+.coverage
+/source/*.rst
+/source/configuration/*.rst
