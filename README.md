@@ -15,11 +15,9 @@ bash html.sh
 
 ## Licensing
 
-- **Repository / tooling** (scripts, `renderer/`, CI) — **Apache-2.0**.
+- **Repository / tooling** (scripts, `renderer/`) — **Apache-2.0**.
 
-- **Documentation content** (derived from the HAProxy manuals, which are
-  GPL-2.0) — **GPL-2.0**. The generated site is a derivative of the upstream
-  manuals and retains HAProxy attribution.
+- **Documentation content** (derived from the HAProxy manuals, which are GPL-2.0) — **GPL-2.0**.
+  The generated site is a derivative of the upstream manuals and retains HAProxy attribution.
 
-- The vendored `haproxy-dconv` parser remains under its own **Apache-2.0**
-  license (see `vendor/haproxy-dconv/LICENSE` + `NOTICE`).
+- The vendored `haproxy-dconv` parser remains under its own **Apache-2.0** license (see `vendor/haproxy-dconv/LICENSE` + `NOTICE`).
